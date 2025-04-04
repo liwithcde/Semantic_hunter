@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>词猎人 | Semantic Hunter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>词猎人 <span class="subtitle">| Semantic Hunter</span></h1>
+            <div class="controls">
+                <button id="new-game-btn" class="btn"><i class="fas fa-sync-alt"></i> 新游戏</button>
+                <button id="give-up-btn" class="btn btn-danger"><i class="fas fa-flag"></i> 放弃</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <h2>Can you guess the secret word?</h2>
+                <div class="input-area">
+                    <input type="text" id="guess-input" placeholder="Can you guess the word?" autofocus>
+                    <button id="guess-btn" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div id="message-area" class="message-area"></div>
+            </div>
+
+            <div class="history-area">
+                <div id="guesses-list" class="guesses-list">
+                    <!-- Guesses will be added here dynamically -->
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>词猎人 | Semantic Hunter &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 
