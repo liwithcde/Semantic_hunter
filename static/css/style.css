@@ -1,0 +1,305 @@
+/* Main Styles for Semantic Hunter */
+:root {
+    --primary-color: #0f172a;
+    --secondary-color: #334155;
+    --highlight-color: #f59e0b;
+    --text-color: #f8fafc;
+    --error-color: #ef4444;
+    --success-color: #22c55e;
+    --input-bg: #1e293b;
+    --card-bg: #1e293b;
+    --separator-color: rgba(255, 255, 255, 0.1);
+    --yellow-bright: #ffee00;
+    --yellow-medium: #ffd700;
+    --orange-color: #ff9900;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--highlight-color);
+}
+
+.subtitle {
+    font-size: 0.7em;
+    opacity: 0.8;
+}
+
+.controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--highlight-color);
+    color: var(--primary-color);
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+}
+
+.game-area {
+    margin-bottom: 2rem;
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.input-area {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#guess-input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+#guess-input:focus {
+    outline: 2px solid var(--highlight-color);
+}
+
+.message-area {
+    text-align: center;
+    min-height: 1.5rem;
+}
+
+.history-area {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--highlight-color);
+    display: none; /* Hide the Guess History heading */
+}
+
+.guesses-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Latest guess container styles */
+.latest-guess-container {
+    margin-bottom: 0.5rem;
+}
+
+/* Latest guess now has a background */
+.latest-guess {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Separator line */
+.guess-separator {
+    height: 1px;
+    background-color: var(--separator-color);
+    margin: 0.5rem 0 1rem 0;
+    width: 100%;
+}
+
+/* Regular history containers */
+.history-guesses-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* History items now have no background */
+.guess-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 1rem;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    color: #ddd;
+    transition: all 0.3s ease;
+}
+
+/* Special style for 100% match */
+.perfect-match {
+    background-color: rgba(34, 197, 94, 0.2);
+    border-radius: 0.5rem;
+    border: 1px solid var(--success-color);
+}
+
+.guess-word {
+    font-weight: bold;
+}
+
+/* Base similarity style */
+.guess-similarity {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+/* 1. 0-50%: Default style */
+.similarity-low {
+    color: #aaa;
+}
+
+/* 2. 50-70%: Orange */
+.similarity-medium {
+    color: var(--orange-color);
+}
+
+/* 3. 70-80%: Yellow */
+.similarity-high {
+    color: var(--yellow-medium);
+}
+
+/* 4. 80-90%: Bright yellow with glow */
+.similarity-very-high {
+    color: var(--yellow-bright);
+    text-shadow: 0 0 5px var(--yellow-bright);
+}
+
+/* 5. 90-99%: Orbitron font + bright yellow with glow */
+.similarity-super-high {
+    font-family: 'Orbitron', 'Courier New', Courier, monospace;
+    color: var(--yellow-bright);
+    text-shadow: 0 0 8px var(--yellow-bright);
+}
+
+/* 6. 100%: Green with special container */
+.similarity-perfect {
+    font-family: 'Orbitron', 'Courier New', Courier, monospace;
+    color: var(--success-color);
+    text-shadow: 0 0 10px var(--success-color);
+}
+
+/* Pagination styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 1.5rem;
+}
+
+.pagination-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: var(--highlight-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+footer {
+    margin-top: 3rem;
+    text-align: center;
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .game-area, .history-area {
+        padding: 1.5rem 1rem;
+    }
+} 
