@@ -6,8 +6,10 @@ import os
 
 app = Flask(__name__)
 
+HF_CACHE = "./hf_cache"
+os.makedirs(HF_CACHE, exist_ok=True)
 # Load model
-model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2', cache_folder=HF_CACHE)
 
 # Load word pool
 with open("words.txt", "r", encoding="utf-8") as f:
