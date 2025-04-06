@@ -1,3 +1,4 @@
+print("Starting...")
 from flask import Flask, render_template, request, jsonify
 import random
 from sentence_transformers import SentenceTransformer, util

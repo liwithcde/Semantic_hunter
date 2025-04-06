@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10-slim
 
 ENV TRANSFORMERS_CACHE=/app/hf_cache
 ENV HF_HOME=/app/hf_cache
