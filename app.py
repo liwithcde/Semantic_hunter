@@ -49,28 +49,46 @@ model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniL
 with open("words.txt", "r", encoding="utf-8") as f:
     word_pool = [line.strip() for line in f if line.strip()]
 
-# Game state
-game_state = {
-    "secret_word": "",
-    "secret_vec": None,
-    "guesses": [],
-    "latest_guess": None
-}
+# 初始化游戏状态函数
+def initialize_game_state():
+    secret_word = random.choice(word_pool)
+    secret_vec = model.encode(secret_word, convert_to_tensor=True)
+    print(f"新游戏已开始，秘密词语: {secret_word}")
+    return {
+        "secret_word": secret_word,
+        "secret_vec": secret_vec,
+        "guesses": []
+    }
+
+# 服务启动时初始化游戏状态
+game_state = initialize_game_state()
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
+@app.route('/game-status', methods=['GET'])
+def game_status():
+    """获取当前游戏状态，包括猜测历史，但不包含秘密词语"""
+    # 对猜测列表按相似度降序排序
+    sorted_guesses = sorted(game_state["guesses"], key=lambda x: x["similarity"], reverse=True)
+    
+    # 检查是否有人已经猜对了
+    has_correct_guess = any(guess["is_correct"] for guess in game_state["guesses"])
+    
+    return jsonify({
+        "status": "success",
+        "guesses": sorted_guesses,
+        "has_correct_guess": has_correct_guess,
+        "is_game_active": True
+    })
+
 @app.route('/new-game', methods=['POST'])
 def new_game():
     global game_state
-    # Reset game state
-    game_state["secret_word"] = random.choice(word_pool)
-    game_state["secret_vec"] = model.encode(game_state["secret_word"], convert_to_tensor=True)
-    game_state["guesses"] = []
-    game_state["latest_guess"] = None
-    
-    return jsonify({"status": "success", "message": "New game started"})
+    # 重置游戏状态
+    game_state = initialize_game_state()
+    return jsonify({"status": "success", "message": "新游戏已开始"})
 
 @app.route('/guess', methods=['POST'])
 def guess():
@@ -78,7 +96,7 @@ def guess():
     guess_word = data.get('guess', '').strip()
     
     if not guess_word:
-        return jsonify({"status": "error", "message": "No guess provided"})
+        return jsonify({"status": "error", "message": "请输入猜测词语"})
     
     # Encode the guess
     guess_vec = model.encode(guess_word, convert_to_tensor=True)
@@ -90,21 +108,17 @@ def guess():
     # Check if correct
     is_correct = (game_state["secret_word"] == guess_word)
     
-    # Update latest guess
-    game_state["latest_guess"] = guess_word
+    # 检查猜测的词是否已存在于历史记录中
+    word_exists = any(g["word"] == guess_word for g in game_state["guesses"])
     
-    # Store guess
-    game_state["guesses"].append({
-        "word": guess_word,
-        "similarity": percent,
-        "is_correct": is_correct,
-        "is_latest": True
-    })
-    
-    # Update previous guesses to not be latest
-    for i in range(len(game_state["guesses"]) - 1):
-        if "is_latest" in game_state["guesses"][i]:
-            game_state["guesses"][i]["is_latest"] = False
+    # 仅当词语不在历史记录中时，才添加到猜测历史
+    if not word_exists:
+        # Store guess
+        game_state["guesses"].append({
+            "word": guess_word,
+            "similarity": percent,
+            "is_correct": is_correct
+        })
     
     # Sort guesses by similarity (descending)
     sorted_guesses = sorted(game_state["guesses"], key=lambda x: x["similarity"], reverse=True)
@@ -113,8 +127,7 @@ def guess():
         "status": "success",
         "similarity": percent,
         "is_correct": is_correct,
-        "guesses": game_state["guesses"],
-        "latest_guess": guess_word
+        "guesses": sorted_guesses
     }
     
     if is_correct:
