@@ -3,6 +3,39 @@ import random
 from sentence_transformers import SentenceTransformer, util
 import torch
 import os
+import sys
+import pkg_resources
+import platform
+
+# 打印版本信息函数
+def print_version_info():
+    print("=" * 50)
+    print(f"Python 版本: {platform.python_version()}")
+    print(f"Python 实现: {platform.python_implementation()}")
+    print(f"系统信息: {platform.system()} {platform.release()}")
+    print("-" * 50)
+    print("已安装的依赖包版本:")
+    
+    # 检查主要依赖库的版本
+    packages = [
+        'flask', 
+        'sentence-transformers', 
+        'torch', 
+        'numpy',
+        'transformers'  # sentence-transformers 依赖的库
+    ]
+    
+    for package in packages:
+        try:
+            version = pkg_resources.get_distribution(package).version
+            print(f"  - {package}: {version}")
+        except pkg_resources.DistributionNotFound:
+            print(f"  - {package}: 未安装")
+    
+    print("=" * 50)
+
+# 启动时打印版本信息
+print_version_info()
 
 app = Flask(__name__)
 
@@ -97,4 +130,5 @@ def give_up():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 7860))
+    print(f"启动服务器在端口: {port}")
     app.run(host='0.0.0.0', port=port) 
