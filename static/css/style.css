@@ -76,6 +76,14 @@ h1 {
     transform: translateY(-2px);
 }
 
+.btn:disabled {
+    background-color: #4b5563;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
 .btn-primary {
     background-color: var(--highlight-color);
     color: var(--primary-color);

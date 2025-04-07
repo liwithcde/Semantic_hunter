@@ -86,9 +86,18 @@ def game_status():
 @app.route('/new-game', methods=['POST'])
 def new_game():
     global game_state
-    # 重置游戏状态
-    game_state = initialize_game_state()
-    return jsonify({"status": "success", "message": "新游戏已开始"})
+    
+    # 检查是否有人已经猜对了
+    has_correct_guess = any(guess["is_correct"] for guess in game_state["guesses"])
+    
+    # 只有在已经猜中的情况下才重置游戏
+    if has_correct_guess:
+        # 重置游戏状态
+        game_state = initialize_game_state()
+        return jsonify({"status": "success", "message": "新游戏已开始"})
+    else:
+        # 不重置游戏状态
+        return jsonify({"status": "success", "message": "游戏仍在进行中"})
 
 @app.route('/guess', methods=['POST'])
 def guess():
@@ -134,13 +143,6 @@ def guess():
         response["message"] = "猜对啦！"
     
     return jsonify(response)
-
-@app.route('/give-up', methods=['POST'])
-def give_up():
-    return jsonify({
-        "status": "success",
-        "secret_word": game_state["secret_word"]
-    })
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 7860))

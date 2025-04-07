@@ -11,7 +11,6 @@ class SemanticHunterUI {
         this.messageArea = document.getElementById('message-area');
         this.guessesList = document.getElementById('guesses-list');
         this.newGameBtn = document.getElementById('new-game-btn');
-        this.giveUpBtn = document.getElementById('give-up-btn');
         this.itemsPerPage = 7;
     }
 
@@ -254,22 +253,6 @@ class SemanticHunterAPI {
             throw new Error('无法连接到服务器');
         }
     }
-
-    // 放弃游戏
-    async giveUp() {
-        try {
-            const response = await fetch('/give-up', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('放弃游戏时出错:', error);
-            throw new Error('无法连接到服务器');
-        }
-    }
 }
 
 /**
@@ -286,6 +269,9 @@ class SemanticHunterGame {
         this.allGuesses = [];    // 所有猜测历史
         this.currentPage = 1;    // 当前分页
         
+        // 初始设置新游戏按钮为禁用状态
+        this.ui.newGameBtn.disabled = true;
+        
         // 初始化事件监听器
         this.initEventListeners();
         
@@ -300,7 +286,6 @@ class SemanticHunterGame {
             if (e.key === 'Enter') this.submitGuess();
         });
         this.ui.newGameBtn.addEventListener('click', () => this.initGame());
-        this.ui.giveUpBtn.addEventListener('click', () => this.giveUp());
     }
 
     // 加载游戏状态 - 从后端获取当前状态
@@ -330,6 +315,9 @@ class SemanticHunterGame {
                     this.ui.showMessage('游戏开始! 尝试猜测秘密词语!');
                 }
                 
+                // 更新新游戏按钮状态
+                this.updateNewGameButton();
+                
                 // 清空输入框并聚焦
                 this.ui.clearAndFocusInput();
             } else {
@@ -352,6 +340,9 @@ class SemanticHunterGame {
                 this.latestGuess = null;
                 this.currentPage = 1;
                 this.ui.showMessage('新游戏开始! 尝试猜测秘密词语!');
+                
+                // 更新新游戏按钮状态
+                this.updateNewGameButton();
             } else {
                 this.ui.showError(data.message || '初始化游戏时出错');
             }
@@ -393,30 +384,13 @@ class SemanticHunterGame {
                     this.ui.showMessage(`相似度: ${data.similarity}%`);
                 }
                 
+                // 更新新游戏按钮状态
+                this.updateNewGameButton();
+                
                 // 清空输入框并聚焦
                 this.ui.clearAndFocusInput();
             } else {
                 this.ui.showError(data.message || '提交猜测时出错');
-            }
-        } catch (error) {
-            this.ui.showError(error.message);
-        }
-    }
-
-    // 放弃游戏
-    async giveUp() {
-        if (!this.gameActive) {
-            this.ui.showError('游戏已结束，请点击新游戏');
-            return;
-        }
-
-        try {
-            const data = await this.api.giveUp();
-            if (data.status === 'success') {
-                this.gameActive = false;
-                this.ui.showError(`你放弃了! 秘密词语是: ${data.secret_word}`);
-            } else {
-                this.ui.showError(data.message || '放弃游戏时出错');
             }
         } catch (error) {
             this.ui.showError(error.message);
@@ -435,6 +409,15 @@ class SemanticHunterGame {
                 this.updateGuessList(guesses, latestGuess);
             });
         }
+    }
+    
+    // 更新新游戏按钮状态
+    updateNewGameButton() {
+        // 检查是否有正确的猜测
+        const hasCorrectGuess = this.allGuesses.some(guess => guess.is_correct);
+        
+        // 只有在游戏已结束（有正确猜测）时，新游戏按钮才可用
+        this.ui.newGameBtn.disabled = !hasCorrectGuess;
     }
 }
 
