@@ -8,10 +8,7 @@ pinned: false
 short_description: Semantic Hunter Game
 ---
 
-Try this: https://huggingface.co/spaces/sunnyball23/Semantic_Hunter 
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
-
+👉 Try online: https://huggingface.co/spaces/sunnyball23/Semantic_Hunter 
 
 
 # Semantic Hunter (词猎人)
